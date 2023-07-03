@@ -1,0 +1,143 @@
+package esmsapp;
+
+import org.openqa.selenium.By;
+import esmsapp.Login;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.aventstack.extentreports.Status;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class GroupBooking {
+	
+	
+	
+	public void groupbooking(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+	
+		String numofattendees = queryObjects.getTestData("No.of attendees");
+		String EID = queryObjects.getTestData("EmpID");
+		
+		Thread.sleep(10000);
+	
+	//driver.findElement(By.xpath("//div[@class='menu-box']//div[contains(text(),'Request / Reserve ')]")).click();
+		driver.findElement(By.xpath("//*[@class='menu-img']//*[contains(text(), 'Request / Reserve ')]")).click();
+		Thread.sleep(1000);
+		//mat-radio-button[contains(@id,'mat-radio-11')]//*[@class='mat-radio-outer-circle']
+		//*[@class='mat-radio-container']//input[@type = 'radio']
+	if (driver.findElement(By.xpath("//*[@class='mat-radio-container']//input[@type = 'radio']")).isSelected()) {
+		System.out.println("Request Type as Seat");
+	} else {
+		driver.findElement(By.xpath("//mat-radio-button[contains(@id,'mat-radio-11')]//*[@class='mat-radio-outer-circle']")).click();
+	}
+
+	//Requested for Self Radio button
+	if (driver.findElement(By.xpath("//mat-radio-button[@id='mat-radio-9']/label/div[@class='mat-radio-container']")).isSelected()) {
+		System.out.println("Request For as Group");
+
+	} else {
+		driver.findElement(By.xpath("//mat-radio-button[@id='mat-radio-9']/label/div[@class='mat-radio-container']")).click();
+		System.out.println("Request For as Group Selected");
+	}
+	Thread.sleep(1000);
+	//Adding Employee count
+	driver.findElement(By.xpath("//div[@class='mat-form-field-infix']//input[@id='mat-input-4']")).sendKeys(queryObjects.getTestData(numofattendees));
+	driver.findElement(By.xpath("//mat-icon[contains(text(),'add')]")).click();
+	Thread.sleep(1000);
+	
+	//Adding Employees 
+	driver.findElement(By.xpath("//div[@class='mat-form-field-infix']//input[@placeholder='Employee ID']")).sendKeys(queryObjects.getTestData("EmpID"));
+	driver.findElement(By.xpath("//mat-icon[contains(text(),'search')]")).click();
+	Thread.sleep(100);
+	WebElement Employeename = driver.findElement(By.xpath("//form[@class='ng-untouched ng-pristine ng-valid']")); 
+	System.out.println(Employeename.getText());
+	
+	driver.findElement(By.xpath("//mat-icon[contains(@class,'icon-add mat-icon notranslate material-icons mat-icon-no-color')]")).click();
+	Thread.sleep(100);
+	driver.findElement(By.xpath("//div[@fxlayoutalign='end center']//span[contains(text(),'Save')]")).click();
+	
+	
+	queryObjects.logStatus(driver, Status.PASS, "Login to ESMSAPP Application", "LoginSuccess", null);
+	
+	}
+	public void GroupSeats(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+		String seat1 = queryObjects.getTestData("Seat1");
+		String seat2 = queryObjects.getTestData("Seat2");
+		String Building = queryObjects.getTestData("building");
+		 //Seats
+       driver.findElement(By.xpath("//span[text()='Seats']")).click();
+       WebDriverWait wait2 =new WebDriverWait(driver,10);
+       wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-option[@role='option']//span[contains(text(),'"+seat1+"')]"))).click();
+       wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-option[@role='option']//span[contains(text(),'"+seat2+"')]"))).click();
+       driver.findElement(By.xpath("//div[contains(@class,'cdk-overlay-backdrop cdk')]")).click();
+       
+     //Submit
+       driver.findElement(By.xpath("//span[text()='Submit']")).click();
+       Thread.sleep(3000);
+       WebElement buildingReqSmry = driver.findElement(By.xpath("//label[contains(text(),'Garhoud-Operations')]"));
+       
+		/*
+		 * if (Building == buildingReqSmry.getText() ) { queryObjects.logStatus(driver,
+		 * Status.PASS, buildingReqSmry+"validated", "Building selected Successfully",
+		 * null); } else { queryObjects.logStatus(driver, Status.FAIL,
+		 * buildingReqSmry+"validated", "Building not selected", null); }
+		 */
+       driver.findElement(By.xpath("//button[@class=\"logoutbtn mat-button ng-star-inserted\"]//span[text()='Submit']")).click();
+       Thread.sleep(5000);
+      
+       driver.findElement(By.xpath("//img[@class = 'profile-img']")).click();
+       driver.findElement(By.xpath("//span[@translate = 'fp.sign.out']")).click();
+       
+       driver.close();
+       
+		
+	}
+	
+	public void GroupEdit(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+		
+		Thread.sleep(10000);
+		 String Usernm = queryObjects.getTestData("userName");
+
+		driver.findElement(By.xpath("//*[@class='menu-img']//*[contains(text(), 'View Request')]")).click();
+		
+		Thread.sleep(10000);
+		
+		/*
+		 * if
+		 * (driver.findElement(By.xpath("//span[@mattooltip = 'Edit']")).isDisplayed()){
+		 * 
+		 * driver.findElement(By.xpath("//div[contains(text(),'My Requests')]")).click()
+		 * ; }
+		 * 
+		 * else {
+		 * 
+		 * System.out.println("In My Request"); }
+		 */
+		Thread.sleep(1000);
+		if (driver.findElement(By.xpath("//u/label[contains(text(),'Seat No')]")).isDisplayed() && driver.findElement(By.xpath("//div[contains(text(),' In progress')]")).isDisplayed() ){
+			
+			driver.findElement(By.xpath("//u/label[contains(text(),'Seat No')]")).click(); 
+			}
+		else {
+			if (driver.findElement(By.xpath("//u/label[contains(text(),'Seat No')]")).isDisplayed() && driver.findElement(By.xpath("//div[contains(text(),'Approved')]")).isDisplayed() ){
+				
+				driver.findElement(By.xpath("//u/label[contains(text(),'Seat No')]")).click(); 
+				}
+		}
+		driver.findElement(By.xpath("//span[contains(@mattooltip,'Edit Request')]")).click();
+		WebElement EmplID = driver.findElement(By.xpath("//mat-cell[contains(@class,'mat-cell cdk-column-EmpId mat-column-EmpId')]"));
+		if (Usernm != EmplID.getText()) {
+				driver.findElement(By.xpath("//span[contains(@mattooltip,'Delete')]")).click();
+		}
+		WebDriverWait wait2 =new WebDriverWait(driver,10);
+        wait2.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(@translate,'fp.resubmit')]"))).click();
+		
+	
+		}
+		
+
+
+
+}

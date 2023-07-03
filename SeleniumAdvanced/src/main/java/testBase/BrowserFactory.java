@@ -1,0 +1,29 @@
+package testBase;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class BrowserFactory {
+	
+	public WebDriver createBrowserInstace(String browser) {
+		
+		WebDriver driver = null;
+		if (browser.equalsIgnoreCase("Chrome")){
+			
+			WebDriverManager.chromedriver().setup();
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--incognito");
+			driver = new ChromeDriver(options);
+			
+		}
+		else {
+			System.out.println("Chrome cannot be initiated");
+		}
+		
+	return driver;
+	}
+
+}

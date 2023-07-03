@@ -1,0 +1,19 @@
+package eAWB;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class Air_Way_Bill {
+ public void LogineAWB(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+	 driver.get("https://eawblink.org/");
+     Thread.sleep(1000);
+     String Login=queryObjects.getTestData("LoginID");
+     String pwd=queryObjects.getTestData("Password");
+     driver.findElement(By.xpath("//input[@id ='txtLoginUsername']")).sendKeys(Login);
+     driver.findElement(By.xpath("//input[@id ='txtLoginPassword']")).sendKeys(pwd);
+     Thread.sleep(1000);
+     driver.findElement(By.xpath("//button[@id ='btn-login']")).click();
+}
+}

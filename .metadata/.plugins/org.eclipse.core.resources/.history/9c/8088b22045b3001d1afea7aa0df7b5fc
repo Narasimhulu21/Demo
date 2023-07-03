@@ -1,0 +1,49 @@
+package LFDT;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.aventstack.extentreports.Status;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class Lfdt {
+	
+public void lfdtlogin(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+		
+		//By clicking Profile module
+		driver.navigate().to("https://d1iggqkp62cbjh.cloudfront.net/login");
+		
+		try {
+			String  Usernm=queryObjects.getTestData("userName");
+			String passwrd=queryObjects.getTestData("password");
+			
+			//Passing the input values
+			driver.findElement(By.xpath("//input[contains(@placeholder, 'Enter email')]")).sendKeys(Usernm);
+			queryObjects.logStatus(driver, Status.PASS, "UserName entered","Bio-Rad Login", null);
+			driver.findElement(By.xpath("//input[contains(@placeholder, 'Enter password')]")).sendKeys(passwrd);
+			queryObjects.logStatus(driver, Status.PASS, "Password entered","Bio-Rad Login", null);
+			Thread.sleep(2000);
+			
+			//for SIGN-IN
+			driver.findElement(By.xpath("//input[contains(@value, 'Sign In')]")).click();
+			Thread.sleep(3000);
+			if (driver.findElement(By.xpath("//span[contains(text(),'Dashboard')]")).isDisplayed()){
+				System.out.println("Bio-Rad User Logged in Successfully");
+				queryObjects.logStatus(driver, Status.PASS, "Login to LFDT Application with Bio-Rad Login","LoginSuccess", null);
+
+		}
+		}
+		catch(Exception e) {
+			queryObjects.logStatus(driver, Status.FAIL, "Login to LFDT Application","Login UnSuccess", e);
+			
+		}
+			
+		
+		
+		
+
+
+}
+}
+

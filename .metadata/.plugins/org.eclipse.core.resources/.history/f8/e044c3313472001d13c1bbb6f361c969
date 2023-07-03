@@ -1,0 +1,68 @@
+package hari.Selenium.Excel;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+
+
+public class Excel2 {
+
+	public static void main(String[] args) throws Exception {
+	
+		// TODO Auto-generated method stub
+		WebDriverManager.chromedriver().setup(); 
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.get("https://github.com/login");
+		Thread.sleep(3000);
+
+		FileInputStream file = new FileInputStream("C:\\Book2.xlsx");
+		XSSFWorkbook Workbook = new XSSFWorkbook(file);
+		XSSFSheet Sheet = Workbook.getSheet("Sheet1");
+		int Row = Sheet.getLastRowNum();
+
+		for (int i = 1; i <= Row; i++) {
+			XSSFRow Roww = Sheet.getRow(i);
+
+			String Username = Roww.getCell(0).getStringCellValue();
+			String Password = Roww.getCell(1).getStringCellValue();
+
+			driver.findElement(By.xpath("//input[@id='login_field']")).sendKeys(Username);
+			Thread.sleep(3000);
+			driver.findElement(By.xpath("//input[@id='password']")).sendKeys(Password);
+			Thread.sleep(3000);
+			driver.findElement(By.xpath("//input[@type='submit']")).click();
+			Thread.sleep(3000);
+
+			WebElement Massage = driver.findElement(By.xpath("//div[@class='px-2']"));
+			String Massage1 = Massage.getText();
+			System.out.println(Massage1);
+
+			if (Massage1.equalsIgnoreCase("The home for all developers — including you.")) {
+				Sheet.getRow(i).createCell(2).setCellValue("pass");
+			} else {
+				Sheet.getRow(i).createCell(2).setCellValue("Fail");
+			}
+
+			FileOutputStream Fout = new FileOutputStream("C:\\Book2.xlsx");
+
+			Workbook.write(Fout);
+
+		}
+		Workbook.close();
+
+		driver.close();
+
+	}
+
+}

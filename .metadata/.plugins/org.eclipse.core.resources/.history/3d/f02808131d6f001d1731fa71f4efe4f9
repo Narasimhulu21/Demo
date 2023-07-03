@@ -1,0 +1,13 @@
+package Api;
+
+import java.io.IOException;
+
+public class Token extends Tokenclass {
+	
+	public static void main(String token1) throws IOException{
+	Tokenclass obj = new Tokenclass();
+	obj.get(token1);
+	System.out.println(token1);
+
+}
+}

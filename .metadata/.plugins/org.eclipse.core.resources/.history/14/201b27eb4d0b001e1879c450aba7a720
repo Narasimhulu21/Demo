@@ -1,0 +1,3 @@
+module eAWB {
+	requires org.openqa.selenium.core;
+}

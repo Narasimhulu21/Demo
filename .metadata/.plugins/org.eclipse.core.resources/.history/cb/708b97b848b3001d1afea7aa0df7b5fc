@@ -1,0 +1,226 @@
+package LFDT;
+
+import static org.testng.Assert.assertEquals;
+
+import java.lang.reflect.Array;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
+
+import com.aventstack.extentreports.Status;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class DashboardBR {
+
+	public void dashboard_BR(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+
+		try {
+			String Description = queryObjects.getTestData("filter_Description");
+			String Sample_Name = queryObjects.getTestData("Sample_Name");
+			String Message = queryObjects.getTestData("Message");
+
+			String Status_excel = queryObjects.getTestData("Status");
+			// String passwrd=queryObjects.getTestData("password");
+
+			Thread.sleep(3000);
+			// Checking the number of records in a table before searching
+			int num_of_records_befr = driver
+					.findElements(By.xpath("//table[contains(@aria-label, 'a dense table')]/tbody/tr")).size();
+			System.out.println(num_of_records_befr);
+			queryObjects.logStatus(driver, Status.PASS, "There are " + num_of_records_befr + "  records before Search",
+					"Succefully displayed records", null);
+
+			Thread.sleep(1000);
+			// searching the records by Description
+			driver.findElement(By.xpath("//input[contains(@placeholder, 'Description')]")).sendKeys(Description);
+			driver.findElement(By.xpath("//span[@class ='MuiButton-startIcon MuiButton-iconSizeMedium css-6xugel']"))
+					.click();
+			if (!driver.findElement(By.xpath("//input[contains(@placeholder, 'Description')]")).equals(null)) {
+				queryObjects.logStatus(driver, Status.PASS, "Date entered into description filter", "Search Filter",
+						null);
+			} else {
+				queryObjects.logStatus(driver, Status.FAIL, "Date not entered into description filter", "Search Filter",
+						null);
+			}
+
+			Thread.sleep(2000);
+			// Checking the number of records in a table before searching
+			int num_of_records_aftr = driver
+					.findElements(By.xpath("//table[contains(@aria-label, 'a dense table')]//tbody//tr")).size();
+			System.out.println(num_of_records_aftr);
+
+			if (num_of_records_aftr == 1) {
+				queryObjects.logStatus(driver, Status.PASS,
+						"There are " + num_of_records_aftr + " records after Search", "Succefully displayed records",
+						null);
+			} else {
+				// queryObjects.logStatus(driver, Status.FAIL, "Multiple Records -"+
+				// num_of_records_aftr+" Displayed","Succefully displayed records", null);
+				Thread.sleep(2000);
+				driver.findElement(By.xpath("//input[contains(@placeholder, 'Sample')]")).sendKeys(Sample_Name);
+				driver.findElement(
+						By.xpath("//span[@class ='MuiButton-startIcon MuiButton-iconSizeMedium css-6xugel']")).click();
+				Thread.sleep(1000);
+				int num_of_records_aftr_Spec = driver
+						.findElements(By.xpath("//table[contains(@aria-label, 'a dense table')]//tbody//tr")).size();
+				System.out.println(num_of_records_aftr_Spec);
+				if (num_of_records_aftr_Spec == 1) {
+					queryObjects.logStatus(driver, Status.PASS,
+							"There are " + num_of_records_aftr_Spec + " records after Search",
+							"Succefully displayed records", null);
+
+				}
+
+				// Selecting the Record Disaplyed
+				Thread.sleep(2000);
+				driver.findElement(By.xpath("//p[contains(@class, 'text-short')]")).click();
+				Thread.sleep(2000);
+				/*
+				 * String Exp_Des = driver.findElement(By.xpath("//textarea[contains(text(), '"+
+				 * Description +"')]")).getText(); System.out.println(Exp_Des); if
+				 * (Exp_Des.equalsIgnoreCase(Description)) { queryObjects.logStatus(driver,
+				 * Status.PASS,
+				 * "Experiment Details Matched","Experiment details page opened Successfully",
+				 * null); } else { queryObjects.logStatus(driver, Status.FAIL,
+				 * "Experiment not matched Displayed","Succefully displayed records", null); }
+				 */
+				String Exp_Status = driver
+						.findElement(By.xpath("//p[@class ='MuiTypography-root MuiTypography-body1 css-1p81te8']"))
+						.getText();
+				System.out.println(Exp_Status);
+
+				Attachments(driver, queryObjects);
+				driver.findElement(By.xpath("//textarea[@style = 'height: 23vh; width: 98%; overflow: hidden;']"))
+						.sendKeys(Message);
+				try {
+					if (Exp_Status.equalsIgnoreCase("Submitted")) {
+						driver.findElement(By.xpath("//button[contains(text(),'Respond')]")).click();
+						System.out.println("Submitted to Responded Successfully");
+						Thread.sleep(1000);
+						String Exp_Status1 = driver
+								.findElement(
+										By.xpath("//p[@class ='MuiTypography-root MuiTypography-body1 css-1p81te8']"))
+								.getText();
+						System.out.println(Exp_Status1);
+						if (Exp_Status1.equalsIgnoreCase("Responded")) {
+							queryObjects.logStatus(driver, Status.PASS, "Status updated to Responeded from Submitted",
+									"Status Validation", null);
+						} else {
+							queryObjects.logStatus(driver, Status.FAIL,
+									"Status not updated to Responeded from Submitted", "Status Validation", null);
+						}
+						driver.findElement(
+								By.xpath("//span[@class ='MuiButton-startIcon MuiButton-iconSizeMedium css-6xugel']"))
+								.click();
+						Thread.sleep(1000);
+						int comments_lines = driver.findElements(By.xpath("//div[@class ='msg-body']/ul/li")).size();
+						for (int i = 1; i <= comments_lines; i++) {
+							String Message_text = driver
+									.findElement(By.xpath("//div[@class ='msg-body']/ul/li[" + i + "]")).getText();
+							if (Message_text.equalsIgnoreCase(Message)) {
+								queryObjects.logStatus(driver, Status.PASS, "Message/Remarks Added Successfully",
+										"Message Validation", null);
+								break;
+							} else {
+								queryObjects.logStatus(driver, Status.FAIL, "Message/Remarks not Added",
+										"Message Validation", null);
+							}
+						}
+
+					} else if (Exp_Status.equalsIgnoreCase("Responded")) {
+						driver.findElement(By.xpath("//button[contains(text(),'Respond')]")).click();
+						System.out.println("Responded again Successfully");
+						Thread.sleep(2000);
+						String Exp_Status1 = driver
+								.findElement(
+										By.xpath("//p[@class ='MuiTypography-root MuiTypography-body1 css-1p81te8']"))
+								.getText();
+						System.out.println(Exp_Status1);
+						if (Exp_Status1.equalsIgnoreCase("Responded")) {
+							queryObjects.logStatus(driver, Status.PASS, "Status updated to Responeded",
+									"Status Validation", null);
+						} else {
+							queryObjects.logStatus(driver, Status.FAIL, "Status not updated to Responeded",
+									"Status Validation", null);
+						}
+						driver.findElement(
+								By.xpath("//span[@class ='MuiButton-startIcon MuiButton-iconSizeMedium css-6xugel']"))
+								.click();
+						Thread.sleep(1000);
+						int comments_lines = driver.findElements(By.xpath("//div[@class ='msg-body']/ul/li")).size();
+						for (int i = 1; i <= comments_lines; i++) {
+							String Message_text = driver.findElement(By.xpath("//div[@class ='msg-body']/ul/li[" + i + "]/p")).getText();
+							System.out.println(Message_text);
+							// assertEquals(Message_text, Message);
+							  if(Message_text.equalsIgnoreCase(Message)) { 
+								  queryObjects.logStatus(driver, Status.PASS, "Message/Remarks Added Successfully","Message Validation", null); 
+								  break;
+								  }
+						}
+
+					} else {
+						System.out.println("Experiment is closed Closed");
+					}
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		catch (Exception e) {
+			queryObjects.logStatus(driver, Status.FAIL, "Bio_Rad - Filter by Description ",
+					"Failed to displayed records", e);
+
+		}
+		driver.close();
+
+	}
+
+	public void Attachments(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+
+		try {
+			String File_Upload = queryObjects.getTestData("File_Upload");
+			System.out.println(File_Upload);
+			Thread.sleep(2000);
+			driver.findElement(By.xpath("//button[contains(text(),'Attachment')]")).click();
+			Thread.sleep(3000);
+			String bioradfiles = driver
+					.findElement(By.xpath(
+							"//p[contains(@class,'MuiTypography-root MuiTypography-body1 header-style css-9l3uo3')]"))
+					.getText();
+			System.out.println(bioradfiles);
+
+			if (File_Upload.equalsIgnoreCase("Yes")) {
+				System.out.println("Bio-Rad user Logged in and can upload Files");
+				queryObjects.logStatus(driver, Status.PASS, "Bio_Rad can upload files here ", "File Upload", null);
+				// Available Files under Bio-Rad
+				Thread.sleep(2000);
+				int num_of_records_aftr = driver
+						.findElements(
+								By.xpath("//table[@class ='MuiTable-root MuiTable-stickyHeader css-lkld8c']/tbody/tr"))
+						.size();
+				System.out.println("There are " + num_of_records_aftr + " files under Bio_rad");
+				driver.findElement(By.xpath("//button[contains(text(),'Upload')]")).click();
+				driver.findElement(By.xpath("//button[contains(text(),'Ok')]")).click();
+
+			} else {
+				Thread.sleep(3000);
+				int num_of_records_aftr = driver
+						.findElements(
+								By.xpath("//table[@class ='MuiTable-root MuiTable-stickyHeader css-lkld8c']/tbody/tr"))
+						.size();
+				System.out.println("There are " + num_of_records_aftr + " files under Bio_rad");
+				Thread.sleep(2000);
+				driver.findElement(By.xpath("//button[contains(text(),'Ok')]")).click();
+				queryObjects.logStatus(driver, Status.PASS, "Files are already there under Bio_rad ", "File Upload",
+						null);
+			}
+
+		} catch (Exception e) {
+
+		}
+	}
+
+}

@@ -1,0 +1,110 @@
+package Api;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.testng.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.testng.Assert;
+
+import files.PayLoad;
+import files.ReUsableMethods;
+
+public class APITest {
+	
+	public String response = "";
+	public static void main(String s[]) throws IOException{
+		
+//	RestAssured.useRelaxedHTTPSValidation();	
+		
+		  RestAssured.baseURI="http://54.189.239.147:3000/userDetails"; String
+		  response=given().auth().preemptive().basic("Admin", "Admin@123")
+		  .header("Accept",
+		  ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON)
+		  .body(PayLoad.login1()).when().post("/login")
+		  .then().log().all().assertThat().statusCode(200)
+		  .extract().response().asString(); //.extract().path("token").toString();
+		  
+		  System.out.println(response);
+		  
+		  JsonPath js=ReUsableMethods.jsonpath(response); String
+		  token=js.getString("token"); System.out.println(token);
+		 
+	
+	
+	 
+		System.out.println(token);
+	System.out.println("*****");
+	RestAssured.baseURI="http://54.189.239.147:3100/employees/102";
+	String response1 = given().header("Authorization", "Bearer "+token)
+			.header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON).header("userId","3100026")
+			.when().get().then().assertThat().statusCode(200).extract().response().asString();
+	
+	System.out.println(response1);
+	JsonPath js1=ReUsableMethods.jsonpath(response1);
+	String val=js1.getString("success.type");
+	System.out.println(val);
+	
+	Assert.assertEquals(val,"true");
+	/*if(val.equals("true"))
+		System.out.println("pass");
+	else
+		System.out.println("Fail");*/
+	
+	System.out.println("*****");
+	//Global Search
+	RestAssured.baseURI="http://54.189.239.147:3100/employees";
+	String response2=given().header("Authorization", "Bearer "+token)
+			.header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON).header("userId","3100026")
+	.body(PayLoad.GlobalSearch()).when().post("/globalSearch/")
+			.then().log().all().assertThat().statusCode(200)
+			.extract().response().asString();
+			
+	
+	System.out.println(response2);
+	JsonPath js2=ReUsableMethods.jsonpath(response2);
+	/*
+	 * String EmLoc=js2.getString("resp.Emp_LocID");
+	 * 
+	 * System.out.println(EmLoc); Assert.assertEquals(EmLoc,"[Brussels]");
+	 */
+	String EmRole=js2.getString("resp.Emp_Role_ID");
+	
+	System.out.println(EmRole);
+	Assert.assertEquals(EmRole,"[70003]");
+	
+	
+	
+	System.out.println("*****");
+	//Surrogate API
+	RestAssured.baseURI="http://54.189.239.147:3100/employees";
+	String Surrogate_response=given().header("Authorization", "Bearer "+token)
+			.header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON).header("userId","3100026")
+	.body(PayLoad.surrogate()).when().post("/surrogateAccess")
+			.then().log().all().assertThat().statusCode(200)
+			.extract().response().asString();
+	
+	System.out.println(Surrogate_response);
+/*	String requestBody =  "{\r\n"
+			+ "  \"userId\": \"3100000\",\r\n"
+			+ "  \"password\": \"Create@123\"\r\n"
+			+ "}";
+	
+    String ENDPOINT = "http://54.189.239.147:3000/userDetails/login";
+   // System.out.println("scenarioname: " +CommonUtils.getScenario().getScenarioName());
+      Response Respons = given().auth().preemptive().basic("Admin", "Admin@123")
+    		  .header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON)
+             .body(requestBody)
+             .when().post(ENDPOINT).then().extract().response();
+      System.out.println(Respons.getBody().prettyPrint()); */
+	
+	}
+	
+	
+}

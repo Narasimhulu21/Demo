@@ -1,0 +1,60 @@
+package LFDT;
+
+import java.util.HashMap;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import com.aventstack.extentreports.Status;
+import com.gargoylesoftware.htmlunit.javascript.host.Set;
+import com.gargoylesoftware.htmlunit.javascript.host.file.File;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class DownloadFile {
+	public void Download(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+		Thread.sleep(3000);
+		
+		String Desc1 = queryObjects.getTestData("Description");
+		
+		driver.findElement(By.xpath("//input[@placeholder='Description' and @type='text']")).sendKeys(Desc1);
+		queryObjects.logStatus(driver, Status.PASS, "Description Data entered successfully","Fliter Description", null);
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//span[@class='MuiButton-startIcon MuiButton-iconSizeMedium css-6xugel']")).click();
+		Thread.sleep(6000);
+		driver.findElement(By.xpath("//p[@class='text-short']")).click();
+		queryObjects.logStatus(driver, Status.PASS, "Click On Report ", "Report", null);
+
+		Thread.sleep(6000);
+			String parentHandle = driver.getWindowHandle();
+			driver.findElement(By.xpath("//button[text()='Attachment']")).click();
+			queryObjects.logStatus(driver, Status.PASS, "Click On Attachment ", "Attachment", null);
+			
+			/*
+			 * Set<String> handles = driver.getWindowHandles(); for (String handle :
+			 * handles) { if (handle.equals(parentHandle)) {
+			 * 
+			 * ChromeOptions optpions = new ChromeOptions(); HashMap<String, Object>
+			 * chromePrefs = new HashMap<String, Object>();
+			 * chromePrefs.put("profile.default_content_setting.popups", 0);
+			 * 
+			 * String downloadFilepath =
+			 * System.getProperty("C:\\Users\\jerry.krishna\\Downloads\\LFDT_FILES");
+			 * chromePrefs.put("download.default_directory", downloadFilepath);
+			 * optpions.setExperimentalOption("prefs", chromePrefs);
+			 * 
+			 * 
+			 * 
+			 * Thread.sleep(3000); driver.findElement(By.
+			 * xpath("//button[contains(@class,'MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1yxmbwk') and @id='Sample_File.pdf:rahulreddy:Bio-Rad' and @aria-label='download']"
+			 * )) .click(); queryObjects.logStatus(driver, Status.PASS,
+			 * "Click On Download ", "Attachment", null);
+			 * 
+			 * 
+			 * File file = new File(downloadFilepath+"\\Sample_File"); if (file.exists()) {
+			 * System.out.println("Succss"); } else { System.out.println("Failed"); } } }
+			 */
+		}
+
+}

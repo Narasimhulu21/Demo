@@ -1,0 +1,9 @@
+package Api;
+
+public class Token extends Demo {
+	
+	
+	Demo obj = new Demo(); 
+	String token = obj.token1;
+
+}

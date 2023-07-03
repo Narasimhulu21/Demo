@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-16">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="C:/MSmart/EsmsScript/Lib/poi-ooxml-3.16.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/MSmart/EsmsScript/Lib/poi-3.16.jar"/>
+	<classpathentry kind="lib" path="C:/MSmart/EsmsScript/Lib/client-combined-3.4.0-nodeps.jar"/>
+	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/MSmart/EsmsScript/Lib/extentreports-3.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/MSmart/EsmsScript/Lib/extentreports-java-3.1.3/extentreports-3.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/junju.narasimhulu/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar" sourcepath="C:/Users/junju.narasimhulu/.m2/repository/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="commons-io"/>
+			<attribute name="maven.artifactId" value="commons-io"/>
+			<attribute name="maven.version" value="2.11.0"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

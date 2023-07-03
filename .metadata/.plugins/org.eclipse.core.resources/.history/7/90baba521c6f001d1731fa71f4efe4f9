@@ -1,0 +1,58 @@
+package Api;
+
+import java.io.IOException;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import static io.restassured.RestAssured.*;
+
+
+
+public class Tokenclass{
+	public static void main(String token1) throws Exception {
+
+		
+		/*
+		 * System.setProperty("webdriver.chrome.driver",
+		 * "C://MSmart//Driver//chromedrive.exe"); WebDriver driver = new
+		 * ChromeDriver(); driver.manage().window().maximize();
+		 * driver.get("https://www.hyrtutorials.com/");
+		 */
+		  // RestAssured.useRelaxedHTTPSValidation(); String
+		
+		
+
+		  RestAssured.baseURI="http://54.189.239.147:3000/userDetails"; //String String
+		 String token1=given().auth().preemptive().basic("Admin", "Admin@123")
+		  .header("Accept",ContentType.JSON.getAcceptHeader()).contentType(ContentType.
+		  JSON) .body("{\"userId\": \"3100026\", \"password\": \"Admin@123\"}")
+		  .when().post("/login") .then().log().all().assertThat()
+		  .extract().path("token").toString(); // .extract().response();
+		 
+		  
+		  
+		  
+			/*
+			 * ValidatableResponse response =
+			 * RestAssured.given().auth().preemptive().basic("Admin", "Admin@123")
+			 * .header("Accept",ContentType.JSON.getAcceptHeader()).contentType(ContentType.
+			 * JSON)
+			 * .body("{\"userId\": \"3100026\", \"password\": \"Admin@123\"}").when().post(
+			 * "/login").then().assertThat() .statusCode(200).log().all();
+			 */
+		  
+		  System.out.println("token is available here******* " + token1);
+		 
+	}
+	
+
+	
+	
+
+}
+
+

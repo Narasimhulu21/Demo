@@ -1,0 +1,449 @@
+package esmsapp;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.aventstack.extentreports.Status;
+
+import FrameworkCode.BFrameworkQueryObjects;
+
+public class Visitorbooking {
+ 
+public void Multiple_Ways_of_booking(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception{
+		
+		String slef_visitor=queryObjects.getTestData("slef_visitor");
+		
+		String Building=queryObjects.getTestData("Building");
+		String Floor=queryObjects.getTestData("Floor");
+		String selectyear=queryObjects.getTestData("Start_Date_Year");
+		String selectmonth=queryObjects.getTestData("Start_Date_Month");
+		String selectday=queryObjects.getTestData("Start_Date_Day");
+		String selectHour =queryObjects.getTestData("Start_Date_Hour");
+		String selectMin=queryObjects.getTestData("Start_Date_Min");
+		String selectEyear=queryObjects.getTestData("End_Date_Year");
+		String selectEmonth=queryObjects.getTestData("End_Date_Month");
+		String selectEday=queryObjects.getTestData("End_Date_Day");
+		String selectEndHour=queryObjects.getTestData("End_Date_Hour");
+		String selectEndMin=queryObjects.getTestData("End_Date_Min");
+		
+		String selectVPID= queryObjects.getTestData("Visiting_Person_ID");
+		String selectVPFName= queryObjects.getTestData("Visitor_First_Name");
+		String selectVPLName= queryObjects.getTestData("Visitor_Last_Name");
+		String slef_visitor_Group= queryObjects.getTestData("slef_visitor_Group");
+	
+		if (!slef_visitor_Group.equalsIgnoreCase("Yes")) {
+			Thread.sleep(1000);
+			driver.findElement(By.xpath("//div[contains(text(), 'Request / Reserve')]")).click();
+		        //if statement for selecting the radio button
+			
+			
+			if (!driver.findElement(By.xpath("//div[@class='mat-radio-container']//input[@type = 'radio']")).isSelected())
+				driver.findElement(By.xpath("//div[@class='mat-radio-container']//input[@type = 'radio']")).click();
+			
+			if(slef_visitor.equalsIgnoreCase("Visitor")) {	
+				if (!driver.findElement(By.xpath("//mat-radio-button[@value='Visitor']//div[contains(@class, 'mat-radio-inner-circle')]")).isSelected());
+					driver.findElement(By.xpath("//mat-radio-button[@value='Visitor']//div[contains(@class, 'mat-radio-inner-circle')]")).click();
+					
+				driver.findElement(By.xpath("//input[@formcontrolname= 'vistrID']")).sendKeys(selectVPID);
+				driver.findElement(By.xpath("//mat-icon[text()='search']")).click();
+				driver.findElement(By.xpath("//input[@formcontrolname= 'vistrFirstName']")).sendKeys( selectVPFName);
+				driver.findElement(By.xpath("//input[@formcontrolname= 'vistrLastName']")).sendKeys(selectVPLName);
+			}
+			if(slef_visitor.equalsIgnoreCase("Coworker")) {	
+				driver.findElement(By.xpath("//mat-radio-button[@value='Coworker']//div[contains(@class, 'mat-radio-container')]")).click();
+				   //enter co-workerID
+				String Coworkerid=queryObjects.getTestData("CoworkerID");
+				driver.findElement(By.xpath("//input[@placeholder = 'Coworker ID *']")).sendKeys(Coworkerid);
+				driver.findElement(By.xpath("//mat-icon[text()='search']")).click();	
+			}
+		}
+		System.out.println(selectyear);
+		
+		
+		  
+		 
+		//Building
+		driver.findElement(By.xpath("//mat-select[@formcontrolname= 'buildingVal']")).click();
+		 List <WebElement> buildings = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+     	Thread.sleep(0); 
+		  buildings.get(1).click();
+		  
+		//WebDriverWait wait =new WebDriverWait(driver,10);
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-option[@role='option']//span[contains(text(), '"+Building+"')]"))).click();
+
+		//Floor
+		driver.findElement(By.xpath("//mat-select[@formcontrolname= 'floorVal']")).click();
+		 List <WebElement> floors = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+	     	Thread.sleep(0); 
+	     	floors.get(0).click();
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-option[@role= 'option']//span[contains(text(),'"+Floor+"')]"))).click();
+
+		//Locating StartDate on calendar
+		driver.findElement(By.xpath("//button[@class='mat-icon-button']//*[contains(@class, 'mat-datepicker-toggle-default-icon')]")).click();
+		
+		
+		  String monthAndYear = driver.findElement(By.xpath("//button[contains(@cdkarialive,'polite')]/span")).getText(); 
+		  System.out.println(monthAndYear); 
+		 // driver.findElement(By.xpath("//button[@class='mat-calendar-period-button mat-button']//*[contains(@class, 'mat-button-wrapper')]" )).click();
+		  
+			/*
+			 * driver.findElement(By.xpath("//div[contains(text(), '"
+			 * +selectyear+"')and contains(@class, 'mat-calendar-body-cell-content')]")).
+			 * click(); Thread.sleep(2000);
+			 * driver.findElement(By.xpath("//div[contains(text(), '"
+			 * +selectmonth+"')and contains(@class, 'mat-calendar-body-cell-content')]")).
+			 * click(); Thread.sleep(2000);
+			 * driver.findElement(By.xpath("//div[contains(text(), '"
+			 * +selectday+"')and contains(@class, 'mat-calendar-body-cell-content')]")).
+			 * click ();
+			 */
+		 driver.findElement(By.xpath("//div[contains(@class,'mat-calendar-body-cell-content mat-calendar-body-selected mat-calendar-body-today')]")).click();
+		//focus on StartHour
+		WebElement del = driver.findElement(By.xpath("//input[@formcontrolname='hour']"));
+		String value = del.getAttribute("value");
+		LocalDate currentDate = LocalDate.now();
+		//for placeholder key Backspace 
+		if(value != null) {
+			int valLen = value.length();
+			for (int i = 0; i < valLen; i++) {
+				del.sendKeys(Keys.BACK_SPACE);
+
+			}
+		}
+		driver.findElement(By.xpath("//input[@formcontrolname='hour']")).sendKeys(selectHour);
+
+		//focus on StartMin
+		WebElement del1 = driver.findElement(By.xpath("//input[@formcontrolname='minute']"));
+		String value1 = del1.getAttribute("value");
+		
+		//for placeholder key Backspace 
+		if(value1 != null) {
+			int valLen = value1.length();
+			for (int i = 0; i < valLen; i++) {
+				del1.sendKeys(Keys.BACK_SPACE);
+
+			}
+		}
+		driver.findElement(By.xpath("//input[@formcontrolname='minute']")).sendKeys(selectMin);
+        driver.findElement(By.xpath("//mat-icon[text()='done']")).click();
+
+		//Locating EndDate on calendar
+		driver.findElement(By.xpath("//button[@class='mat-icon-button']//*[contains(@class, 'mat-datepicker-toggle-default-icon')]")).click();
+		
+		//driver.findElement(By.xpath("//button[@class='mat-calendar-period-button mat-button']//*[contains(@class, 'mat-button-wrapper')]")).click();
+		 driver.findElement(By.xpath("//div[contains(@class,'mat-calendar-body-cell-content mat-calendar-body-selected mat-calendar-body-today')]")).click();
+			
+			  driver.findElement(By.xpath("//div[contains(text(), '"+ selectEyear+"') and contains(@class, 'mat-calendar-body-cell-content')]")).click(); Thread.sleep(2000);
+			  driver.findElement(By.xpath("//div[contains(text(), '"+
+			  selectEmonth+"') and contains(@class, 'mat-calendar-body-cell-content')]")).
+			  click(); Thread.sleep(2000);
+			  driver.findElement(By.xpath("//div[contains(text(), '"+
+			  selectEday+"') and contains(@class, 'mat-calendar-body-cell-content')]")).
+			  click();
+			 
+		
+		//focus on EndHour
+		WebElement del3 = driver.findElement(By.xpath("//input[@formcontrolname='hour']"));
+		String value3 = del3.getAttribute("value");
+	
+		//for placeholder key Backspace 
+		if(value3 != null) {
+			int valLen = value3.length();
+			for (int i = 0; i < valLen; i++) {
+				del3.sendKeys(Keys.BACK_SPACE);
+           }
+		}
+		driver.findElement(By.xpath("//input[@formcontrolname='hour']")).sendKeys(selectEndHour);
+		
+		//focus on EndMin
+		WebElement del4 = driver.findElement(By.xpath("//input[@formcontrolname='minute']"));
+		String value4 = del4.getAttribute("value");
+		
+		//for placeholder key Backspace 
+		if(value4 != null) {
+			int valLen = value4.length();
+			for (int i = 0; i < valLen; i++) {
+				del4.sendKeys(Keys.BACK_SPACE);
+
+		   }
+		}
+		
+		driver.findElement(By.xpath("//input[@formcontrolname='minute']")).sendKeys(selectEndMin);
+        Thread.sleep(3000);
+        driver.findElement(By.xpath("//mat-icon[text()='done']")).click();
+        Thread.sleep(1000);		
+        if(slef_visitor.equalsIgnoreCase("Recurring")) {
+        	String 	recurringstartyear = queryObjects.getTestData("Recur_Start_Date_Year");
+        	String recurringstartdate = queryObjects.getTestData("Recur_Start_Date_Month");
+        	String recurringstartday = queryObjects.getTestData("Recur_Start_Date_Day");
+        	
+        	String 	recurringendyear = queryObjects.getTestData("Recur_End_Date_Year");
+        	String recurringenddate = queryObjects.getTestData("Recur_End_Date_Month");
+        	String recurringendday = queryObjects.getTestData("Recur_End_Date_Day");
+        	
+        	String 	Monday = queryObjects.getTestData("Monday");
+        	String Tuesday = queryObjects.getTestData("Tuesday");
+        	String Wednesday = queryObjects.getTestData("Wednesday");
+        	String Thursday = queryObjects.getTestData("Thursday");
+        	String Friday = queryObjects.getTestData("Friday");
+        	
+        	Recurring(driver,queryObjects,recurringstartyear,recurringstartdate,recurringstartday,recurringendyear,recurringenddate,recurringendday,Monday,Tuesday,Wednesday,Thursday,Friday);
+        }
+        Thread.sleep(1000);
+      //Seats
+        if (!slef_visitor_Group.equalsIgnoreCase("Yes")) {
+	        driver.findElement(By.xpath("//span[text()='Seats']")).click();
+	        List <WebElement> building = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+	        Thread.sleep(0); 
+			  building.get(0).click();
+			  driver.findElement(By.xpath("//div[@class='cdk-overlay-container']")).click();
+			
+				/*
+				 * driver.findElement(By.
+				 * xpath("//mat-select[@formcontrolname='selectedSeat']//div[contains(@class, 'mat-select-arrow-wrapper')]"
+				 * )).click(); WebDriverWait wait2 = new WebDriverWait(driver,30);
+				 * wait2.until(ExpectedConditions.visibilityOfElementLocated(By.
+				 * xpath("//mat-option[@role='option']//span[contains(@class, 'mat-option-text')]"
+				 * ))).click();
+				 */
+        }
+        else if (slef_visitor_Group.equalsIgnoreCase("Yes")) {
+        	driver.findElement(By.xpath("//span[text()='Seats']")).click();
+	        List <WebElement> building = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+	        	Thread.sleep(0); 
+			  building.get(1).click();
+			  building.get(2).click();
+			driver.findElement(By.xpath("//div[@class='cdk-overlay-container']")).click();
+        }
+  
+        	
+        
+        
+        //Submit
+		driver.findElement(By.xpath("//span[text()='Submit']")).click();
+		Thread.sleep(5000);
+		WebDriverWait wait2 = new WebDriverWait(driver,30);
+		wait2.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[2]//span[contains(text(), 'Submit')]"))).click();
+		
+		//IF Condition Pass or Fail
+		WebElement validation = driver.findElement(By.xpath("//mat-select[@formcontrolname= 'buildingVal']"));
+		
+		if(Building!=validation.getText())
+			
+		{
+			queryObjects.logStatus(driver, Status.PASS, slef_visitor+" Booking validation","Submit successfully", null);
+		} else {
+			
+			queryObjects.logStatus(driver, Status.FAIL, slef_visitor+" Booking validation","Submit UnSuccessful", null);
+			}
+		Thread.sleep(10000);
+	    driver.findElement(By.xpath("//img[@class = 'profile-img']")).click();
+	    Thread.sleep(1000);
+	    driver.findElement(By.xpath("//span[@translate = 'fp.sign.out']")).click();
+	    driver.close();
+		          } 
+
+
+public void Recurring(WebDriver driver, BFrameworkQueryObjects queryObjects,String recurringstartyear,String recurringstartdate,String recurringstartday,String recurringendyear,String recurringenddate,String recurringendday,String Monday,String Tuesday,String Wednesday,String Thursday,String Friday) throws InterruptedException, IOException {
+
+	
+	//Recurring
+	Thread.sleep(3000);
+	driver.findElement(By.xpath("//span[@translate='fp.make.recurring']")).click();
+	Thread.sleep(3000);
+	//Start date
+	driver.findElement(By.xpath("//app-recurrance-popup/form/div//*[contains(@class,'mat-form-field-suffix')]")).click();
+	driver.findElement(By.xpath("//*[@aria-label='Choose month and year']//*[contains(@class, 'mat-button-wrapper')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringstartyear+ "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringstartdate+ "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringstartday + "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	//End date
+	driver.findElement(By.xpath("//mat-form-field[@fxflex='47']//*[contains(@class,'mat-form-field-suffix ng-tns')]")).click();
+	driver.findElement(By.xpath("//*[@aria-label='Choose month and year']//*[contains(@class, 'mat-button-wrapper')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringendyear+ "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringenddate+ "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	driver.findElement(By.xpath("//div[contains(text(), '" + recurringendday + "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	//List<WebElement> Recurringdays = driver.findElements(By.xpath("//*[@id=\"mat-dialog-0\"]/app-recurrance-popup/form/div/div[1]/div[2]/div"));
+	
+	
+	//div[@fxlayoutalign='center center']/div/button/span[contains(text(),'" + Tuesday + "')]
+	driver.findElement(By.xpath("//button[contains(@class,'mat-mini-fab mat-accent')]/span[contains(text(),'" + Monday + "')]")).click();
+	driver.findElement(By.xpath("//div[@fxlayoutalign='center center']/div/button/span[contains(text(),'" + Tuesday + "')]")).click();
+	driver.findElement(By.xpath("//button[contains(@class,'mat-mini-fab mat-accent')]/span[contains(text(),'" + Wednesday + "')]")).click();
+	//driver.findElement(By.xpath("//button[contains(@class,'mat-mini-fab mat-accent')]/span[contains(text(),'" + Thursday + "')]")).click();
+	//driver.findElement(By.xpath("//div[@fxlayoutalign='center center']/div/button/span[contains(text(),'" + Friday + "')]")).click();
+	driver.findElement(By.xpath("//span[@translate='fp.save']")).click();
+	
+	//Recurring Text validation
+	/*
+	 * Thread.sleep(2000); WebElement text = driver.findElement(By.
+	 * xpath("//div[contains(@class,'auto-width ng-star-inserted')]/span")); String
+	 * recurringtext = text.getText();
+	 * 
+	 * if (recurringtext.equalsIgnoreCase("Occurs every")){
+	 * 
+	 * queryObjects.logStatus(driver, Status.PASS, Monday+ Tuesday + Wednesday
+	 * +"Recurring days Selected successfully", "Recurring booking", null); } else {
+	 * queryObjects.logStatus(driver, Status.FAIL, "Recurring days not Selected",
+	 * "Recurring booking", null); }
+	 */
+	}
+
+
+public void Location(WebDriver driver, BFrameworkQueryObjects queryObjects) throws Exception {
+	
+	String Building = queryObjects.getTestData("building");
+	String Floor = queryObjects.getTestData("floor");
+	String selectyear = queryObjects.getTestData("Start_Date_Year");
+	String selectmonth = queryObjects.getTestData("Start_Date_Month");
+	String selectday = queryObjects.getTestData("Start_Date_Day");
+
+	String selectEyear = queryObjects.getTestData("End_Date_Year");
+	String selectEmonth = queryObjects.getTestData("End_Date_Month");
+	String selectEday = queryObjects.getTestData("End_Date_Day");
+	
+	// Getting the City
+	WebElement City =driver.findElement(By.xpath("//mat-select[contains(@placeholder,'City')]"));
+	System.out.println(City.getText());
+	String Cityvalue1 = City.getText();
+	// For Building Selection
+	/*
+	 * driver.findElement(By.xpath("//mat-select[contains(@placeholder,'Building')]"
+	 * )).click(); Thread.sleep(0);
+	 * 
+	 * List <WebElement> buildings =
+	 * driver.findElements(By.xpath("//*[@id=\"cdk-overlay-1\"]/div/div"));
+	 * 
+	 * buildings = new ArrayList<>(); System.out.println( buildings.get(0));
+	 * Thread.sleep(0); buildings.get(0).click();
+	 */
+	
+		
+		
+	//Building
+	  driver.findElement(By.xpath("//mat-select[contains(@placeholder,'Building')]")).click();
+	
+			 List <WebElement> buildings = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+	     	Thread.sleep(0); 
+			  buildings.get(2).click();
+			  
+			//WebDriverWait wait =new WebDriverWait(driver,10);
+			//wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-option[@role='option']//span[contains(text(), '"+Building+"')]"))).click();
+
+			//Floor
+			driver.findElement(By.xpath("//mat-select[@formcontrolname= 'floorVal']")).click();
+			 List <WebElement> floors = driver.findElements(By.xpath("//div[@class='cdk-overlay-pane']/div/div/mat-option"));
+		     	Thread.sleep(100); 
+		     	floors.get(1).click();
+	//  WebDriverWait wait = new WebDriverWait(driver, 10);
+	 // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath( "//*[@role='option']//span[contains(text(),'" + Building + "')]"))).click();
+	 
+
+	// For Floor Selection
+	
+	//driver.findElement(By.xpath("//*[@placeholder ='Floor *']")).click();
+	//List<WebElement> Floornums = driver.findElements(By.xpath("//*[@role='option']//span[contains(text(),'" + Floor + "')]"));
+	//System.out.println(Floornums);
+	// WebDriverWait wait1 = new WebDriverWait(driver, 10);
+	//wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@role='option']//span[contains(text(),'" + Floor + "')]"))).click();
+	
+	
+	
+
+	// Locating StartDate on calendar
+	driver.findElement(By.xpath("//*[@aria-label='Open calendar']//*[contains(@class, 'mat-datepicker-toggle-default-icon')]")).click();
+	//driver.findElement(By.xpath("//*[@aria-label='Choose month and year']//*[contains(@class, 'mat-button-wrapper')]")).click();
+	driver.findElement(By.xpath("//div[contains(@class,'mat-calendar-body-cell-content mat-calendar-body-selected mat-calendar-body-today')]")).click();
+	// wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[conatins(text(),
+	// '"+selectyear+"')]and contains(@class, 'mat-calendar-body-cell-content')")));
+	/*
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectyear +
+	 * "')and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectmonth +
+	 * "')and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectday +
+	 * "')and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 */
+	// focus on StartHour
+	WebElement del = driver.findElement(By.xpath("//*[@formcontrolname='hour']"));
+	String value = del.getAttribute("value");
+	if (value != null) {
+		int valLen = value.length();
+		for (int i = 0; i < valLen; i++) {
+			del.sendKeys(Keys.BACK_SPACE);
+
+		}
+	}
+	String selectHour = queryObjects.getTestData("Start_Date_Hour");
+	driver.findElement(By.xpath("//*[@formcontrolname='hour']")).sendKeys(selectHour);
+
+	// focus on StartMin
+	WebElement del1 = driver.findElement(By.xpath("//*[@formcontrolname='minute']"));
+	String value1 = del1.getAttribute("value");
+	if (value1 != null) {
+		int valLen = value1.length();
+		for (int i = 0; i < valLen; i++) {
+			del1.sendKeys(Keys.BACK_SPACE);
+
+		}
+	}
+	String selectMin = queryObjects.getTestData("Start_Date_Min");
+	driver.findElement(By.xpath("//*[@formcontrolname='minute']")).sendKeys(selectMin);
+
+	driver.findElement(By.xpath("//mat-icon[text()='done']")).click();
+
+	// Locating EndDate on calendar
+	driver.findElement(By.cssSelector(".date-picker > div:nth-of-type(2) > div > mat-form-field > div > div > div:nth-of-type(2) > mat-datepicker-toggle > button > span > svg")).click();
+	//driver.findElement(By.xpath("//*[@aria-label='Choose month and year']//*[contains(@class, 'mat-button-wrapper')]")).click();
+	driver.findElement(By.xpath("//div[contains(@class,'mat-calendar-body-cell-content mat-calendar-body-selected mat-calendar-body-today')]")).click();
+	/*
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectEyear+
+	 * "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectEmonth+
+	 * "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 * driver.findElement(By.xpath("//div[contains(text(), '" + selectEday +
+	 * "') and contains(@class, 'mat-calendar-body-cell-content')]")).click();
+	 */
+	// focus on EndHour
+	WebElement del3 = driver.findElement(By.xpath("//*[@formcontrolname='hour']"));
+	String value3 = del3.getAttribute("value");
+	if (value3 != null) {
+		int valLen = value3.length();
+		for (int i = 0; i < valLen; i++) {
+			del3.sendKeys(Keys.BACK_SPACE);
+
+		}
+	}
+	String selectEndHour = queryObjects.getTestData("End_Date_Hour");
+	driver.findElement(By.xpath("//*[@formcontrolname='hour']")).sendKeys(selectEndHour);
+	// focus on EndMin
+	WebElement del4 = driver.findElement(By.xpath("//*[@formcontrolname='minute']"));
+	String value4 = del4.getAttribute("value");
+	if (value4 != null) {
+		int valLen = value4.length();
+		for (int i = 0; i < valLen; i++) {
+			del4.sendKeys(Keys.BACK_SPACE);
+
+		}
+	}
+	String selectEndMin = queryObjects.getTestData("End_Date_Min");
+	driver.findElement(By.xpath("//*[@formcontrolname='minute']")).sendKeys(selectEndMin);
+	Thread.sleep(3000);
+	driver.findElement(By.xpath("//mat-icon[text()='done']")).click();
+	queryObjects.logStatus(driver, Status.PASS,"Building" +Building+ " Validated", "Building Selected Successfully", null);
+	
+	
+	
+	
+}
+
+}

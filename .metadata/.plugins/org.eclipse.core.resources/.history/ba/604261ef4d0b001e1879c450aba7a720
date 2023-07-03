@@ -1,0 +1,4 @@
+module eAWB {
+	requires org.openqa.selenium.core;
+	requires selenium.api;
+}
